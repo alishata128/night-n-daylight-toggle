@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>night-n-daylight-toggle.html</title>
+    <style>
+        :root {
+            --credit-color: #fff;
+            --bg: #222;
+            --btn-bg: #3278AC;
+            --ball-color: #F1C528;
+            --mark-color: #939EB2;
+            --mark-rad: 40%;
+            --box-shadow: 0px 7px 9px 0px rgba(0, 0, 0, 0.25) inset, 0px -1px 13px 0px rgba(0, 0, 0, 0.25) inset, 0px 4px 6px 0px rgba(255, 255, 255, 0.2), 1px -3px 4px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .night {
+            --credit-color: #222;
+            --bg: #f6f6f6;
+            --btn-bg: #1B202E;
+            --ball-color: #C2C9D0;
+            --box-shadow: 0px 7px 9px 0px rgba(0, 0, 0, 0.25) inset, 0px -1px 13px 0px rgba(0, 0, 0, 0.25) inset, 0px 4px 6px 0px #FFF, 1px -3px 4px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+
+        .container {
+            display: grid;
+            place-content: center;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            transition: background .3s ease;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60vw;
+            height: 25vw;
+            background: var(--btn-bg);
+            border-radius: 50vw;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .ball {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 5%;
+            width: 20vw;
+            height: 20vw;
+            background: var(--ball-color);
+            border-radius: 50%;
+            z-index: 9999;
+            cursor: pointer;
+            box-shadow: 3px 4px 4px 0px rgba(255, 255, 255, 0.68) inset, 0px -5px 4px 0px #BFA02F inset, 0 0 5px rgba(0, 0, 0, .4);
+            transition: transform .5s ease-in-out, background .5s ease-in-out, left .5s ease-in-out;
+        }
+
+        .toggle.night .ball {
+            transform: translateY(-50%) translateX(170%);
+            background: var(--ball-color);
+            box-shadow: 1px 2px 1.5px 0px rgba(255, 255, 255, 0.68) inset, 0 0 5px rgba(0, 0, 0, .4);
+        }
+
+        .hover .ball {
+            left: 10%;
+        }
+
+        .toggle.night.hover .ball {
+            left: -1px;
+        }
+
+
+        .hover .rays {
+            left: -25%;
+        }
+
+
+        .rays {
+            position: absolute;
+            left: -30%;
+            content: "";
+            width: 100%;
+            height: 100%;
+            transition: left .4s ease-in-out;
+        }
+
+        .toggle.night .rays {
+            left: 30%;
+        }
+
+        .toggle.night.hover .rays {
+            left: 25%;
+        }
+
+        .ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            transform: translate(-50%, -50%);
+            content: "";
+            border-radius: 50%;
+            padding: 20%;
+            background: rgba(255, 255, 255, 0.10);
+            transition: color 1s ease;
+        }
+
+        .ray-1 {
+            z-index: 100;
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+
+        .ray-2 {
+            z-index: 50;
+            transform: translate(-50%, -50%) scale(2);
+        }
+
+        .ray-3 {
+            z-index: 25;
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform: translateY(0%);
+            transition: transform .3s ease-in;
+        }
+
+        .clouds svg {
+            position: absolute;
+            bottom: 0;
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+
+        .clouds-2 svg {
+            position: absolute;
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+        }
+
+        .toggle.night .clouds {
+            transform: translateY(100%);
+        }
+
+        .toggle .stars {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+
+
+        .toggle.night .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transform: translateY(0%);
+            transition: transform .5s ease-in;
+        }
+
+        .stars svg {
+            transform: translateX(-20vw);
+            scale: .6;
+        }
+
+        .toggle .moon-marks {
+            opacity: 0;
+        }
+
+
+        .toggle.night .moon-marks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: "";
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            border-radius: 50%;
+            transition: opacity .3s ease-in-out .3s;
+
+        }
+
+        .moon-marks .mark {
+            position: absolute;
+            top: 10%;
+            right: 20%;
+            content: "";
+            width: var(--mark-rad);
+            height: var(--mark-rad);
+            background: var(--mark-color);
+            border-radius: 100%;
+            box-shadow: inset 0 1px 2px .5px rgba(0, 0, 0, 0.2);
+        }
+
+        .moon-marks .mark:nth-child(1) {
+            top: unset;
+            right: unset;
+            bottom: 30%;
+            left: 15%;
+            --mark-rad: 20%;
+        }
+
+        .moon-marks .mark:nth-child(2) {
+            top: unset;
+            bottom: 20%;
+            right: 25%;
+            --mark-rad: 10%;
+
+        }
+
+        .credit {
+            position: fixed;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-family: monospace;
+            color: var(--credit-color);
+            font-size: clamp(1rem, 2.5vw, 2rem);
+            padding: .2rem;
+            bottom: 0;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="toggle">
+            <div class="rays">
+                <div class="ray ray-1"></div>
+                <div class="ray ray-2"></div>
+                <div class="ray ray-3"></div>
+            </div>
+            <div class="clouds clouds-1">
+                <!-- <img src="./clouds.svg" alt=""> -->
+                <svg width="100%" height="100%" viewBox="0 0 349 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="314" cy="121" r="32" fill="#E6FCFF" />
+                    <ellipse cx="323" cy="40.5" rx="44" ry="40.5" fill="#E6FCFF" />
+                    <ellipse cx="336.5" cy="89.5" rx="22.5" ry="20.5" fill="#E6FCFF" />
+                    <ellipse cx="279.5" cy="141.5" rx="22.5" ry="20.5" fill="#E6FCFF" />
+                    <ellipse cx="236" cy="132" rx="33" ry="30" fill="#E6FCFF" />
+                    <ellipse cx="194" cy="162" rx="33" ry="30" fill="#E6FCFF" />
+                    <ellipse cx="139" cy="145" rx="33" ry="30" fill="#E6FCFF" />
+                    <ellipse cx="79" cy="154.5" rx="41" ry="37.5" fill="#E6FCFF" />
+                    <ellipse cx="41" cy="147.5" rx="41" ry="37.5" fill="#E6FCFF" />
+                </svg>
+
+            </div>
+            <div class="clouds clouds-2">
+                <svg width="100%" height="100%" viewBox="0 0 359 145" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M344.682 59.3974C353.481 51.9921 359 41.3393 359 29.5C359 7.13247 339.301 -11 315 -11C290.699 -11 271 7.13247 271 29.5C271 44.0291 279.312 56.7713 291.797 63.9177C289.383 67.7605 288 72.2303 288 77C288 77.3356 288.007 77.6697 288.02 78.0022C282.095 82.7442 277.892 89.5492 276.501 97.3286C269.45 90.945 259.731 87 249 87C232.847 87 218.988 95.9385 213.067 108.678C208.416 106.951 203.33 106 198 106C185.782 106 174.844 110.999 167.506 118.877C161.782 109.978 151.159 104 139 104C126.677 104 115.932 110.14 110.264 119.239C102.744 111.139 91.5281 106 79 106C74.8705 106 70.8836 106.558 67.1247 107.597C60.031 102.227 50.9275 99 41 99C18.3563 99 0 115.789 0 136.5C0 157.211 18.3563 174 41 174C45.1295 174 49.1164 173.442 52.8753 172.403C59.969 177.773 69.0725 181 79 181C96.5732 181 111.564 170.888 117.397 156.679C123.185 161.24 130.738 164 139 164C147.447 164 155.152 161.115 160.989 156.37C166.972 169.65 181.29 179 198 179C214.972 179 229.476 169.354 235.286 155.743C239.552 157.202 244.174 158 249 158C258.215 158 266.683 155.091 273.357 150.227C275.31 150.73 277.37 151 279.5 151C290.478 151 299.62 143.837 301.602 134.36C303.669 134.78 305.809 135 308 135C325.673 135 340 120.673 340 103C340 101.573 339.907 100.168 339.726 98.7909C350.624 97.3654 359 88.8239 359 78.5C359 69.808 353.063 62.3795 344.682 59.3974Z"
+                        fill="#E6FCFF" fill-opacity="0.4" />
+                </svg>
+
+            </div>
+            <div class="stars">
+                <!-- <img src="./stars.svg" alt=""> -->
+                <svg width="100%" height="100%" viewBox="0 0 198 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M169.218 36.2423C168.824 36.5908 168.345 36.7764 167.781 36.7991C168.345 36.8218 168.824 37.0074 169.218 37.3597C169.612 37.7081 169.809 38.1248 169.809 38.6058C169.809 38.2877 169.898 37.996 170.077 37.7233C170.261 37.4506 170.507 37.2309 170.816 37.068C171.129 36.9014 171.469 36.8143 171.84 36.7991C171.272 36.7726 170.793 36.5908 170.399 36.2423C170.005 35.8939 169.809 35.481 169.809 35C169.809 35.481 169.612 35.8939 169.218 36.2423Z"
+                        fill="white" />
+                    <path
+                        d="M191.671 1.24234C191.277 1.5908 190.798 1.77639 190.234 1.79912C190.798 1.82184 191.277 2.00744 191.671 2.35969C192.065 2.70815 192.262 3.12478 192.262 3.60581C192.262 3.28765 192.351 2.99601 192.53 2.7233C192.714 2.45059 192.96 2.23091 193.269 2.06804C193.582 1.90138 193.922 1.81427 194.294 1.79912C193.725 1.7726 193.246 1.5908 192.852 1.24234C192.459 0.893878 192.262 0.481027 192.262 0C192.262 0.481027 192.065 0.893878 191.671 1.24234Z"
+                        fill="white" />
+                    <path
+                        d="M26.2491 87.2423C25.8553 87.5908 25.3764 87.7764 24.8125 87.7991C25.3764 87.8218 25.8553 88.0074 26.2491 88.3597C26.6429 88.7081 26.8398 89.1248 26.8398 89.6058C26.8398 89.2877 26.9293 88.996 27.1084 88.7233C27.2918 88.4506 27.538 88.2309 27.8468 88.068C28.1601 87.9014 28.5002 87.8143 28.8716 87.7991C28.3033 87.7726 27.8244 87.5908 27.4306 87.2423C27.0367 86.8939 26.8398 86.481 26.8398 86C26.8398 86.481 26.6429 86.8939 26.2491 87.2423Z"
+                        fill="white" />
+                    <path
+                        d="M98.3272 24.2423C97.9334 24.5908 97.4545 24.7764 96.8906 24.7991C97.4545 24.8218 97.9334 25.0074 98.3272 25.3597C98.721 25.7081 98.918 26.1248 98.918 26.6058C98.918 26.2877 99.0075 25.996 99.1865 25.7233C99.37 25.4506 99.6161 25.2309 99.9249 25.068C100.238 24.9014 100.578 24.8143 100.95 24.7991C100.381 24.7726 99.9025 24.5908 99.5087 24.2423C99.1149 23.8939 98.918 23.481 98.918 23C98.918 23.481 98.721 23.8939 98.3272 24.2423Z"
+                        fill="white" />
+                    <path
+                        d="M129.046 94.2423C128.652 94.5908 128.173 94.7764 127.609 94.7991C128.173 94.8218 128.652 95.0074 129.046 95.3597C129.44 95.7081 129.637 96.1248 129.637 96.6058C129.637 96.2877 129.726 95.996 129.905 95.7233C130.089 95.4506 130.335 95.2309 130.644 95.068C130.957 94.9014 131.297 94.8143 131.669 94.7991C131.1 94.7726 130.621 94.5908 130.227 94.2423C129.834 93.8939 129.637 93.481 129.637 93C129.637 93.481 129.44 93.8939 129.046 94.2423Z"
+                        fill="white" />
+                    <path
+                        d="M35.7721 12.4104C33.7399 14.2084 31.269 15.1661 28.3594 15.2834C31.269 15.4006 33.7399 16.3583 35.7721 18.1759C37.8042 19.9739 38.8203 22.1237 38.8203 24.6058C38.8203 22.9641 39.2822 21.4592 40.2059 20.0521C41.1526 18.6449 42.4227 17.5114 44.0161 16.671C45.6326 15.811 47.3876 15.3615 49.3043 15.2834C46.3716 15.1466 43.9007 14.2084 41.8685 12.4104C39.8364 10.6124 38.8203 8.48208 38.8203 6C38.8203 8.48208 37.8042 10.6124 35.7721 12.4104Z"
+                        fill="white" />
+                    <path
+                        d="M179.952 79.4776C177.264 81.8555 173.996 83.122 170.148 83.2771C173.996 83.4321 177.264 84.6986 179.952 87.1023C182.639 89.4802 183.983 92.3233 183.983 95.6058C183.983 93.4347 184.594 91.4445 185.815 89.5836C187.067 87.7226 188.747 86.2236 190.854 85.1122C192.992 83.9749 195.313 83.3804 197.848 83.2771C193.969 83.0961 190.701 81.8555 188.014 79.4776C185.327 77.0998 183.983 74.2825 183.983 71C183.983 74.2825 182.639 77.0998 179.952 79.4776Z"
+                        fill="white" />
+                    <path
+                        d="M70.3818 81.6205C69.5511 82.3555 68.541 82.747 67.3516 82.7949C68.541 82.8429 69.5511 83.2343 70.3818 83.9773C71.2125 84.7123 71.6279 85.5912 71.6279 86.6058C71.6279 85.9347 71.8166 85.3195 72.1942 84.7443C72.5813 84.1691 73.1005 83.7057 73.7518 83.3622C74.4126 83.0106 75.1301 82.8269 75.9136 82.7949C74.7147 82.739 73.7046 82.3555 72.8739 81.6205C72.0432 80.8855 71.6279 80.0146 71.6279 79C71.6279 80.0146 71.2125 80.8855 70.3818 81.6205Z"
+                        fill="white" />
+                    <path
+                        d="M107.007 65.6205C106.176 66.3555 105.166 66.747 103.977 66.7949C105.166 66.8429 106.176 67.2343 107.007 67.9773C107.837 68.7123 108.253 69.5912 108.253 70.6058C108.253 69.9347 108.442 69.3195 108.819 68.7443C109.206 68.1691 109.725 67.7057 110.377 67.3622C111.038 67.0106 111.755 66.8269 112.539 66.7949C111.34 66.739 110.33 66.3555 109.499 65.6205C108.668 64.8855 108.253 64.0146 108.253 63C108.253 64.0146 107.837 64.8855 107.007 65.6205Z"
+                        fill="white" />
+                    <path
+                        d="M125.913 30.6205C125.082 31.3555 124.072 31.747 122.883 31.7949C124.072 31.8429 125.082 32.2343 125.913 32.9773C126.744 33.7123 127.159 34.5912 127.159 35.6058C127.159 34.9347 127.348 34.3195 127.725 33.7443C128.113 33.1691 128.632 32.7057 129.283 32.3622C129.944 32.0106 130.661 31.8269 131.445 31.7949C130.246 31.739 129.236 31.3555 128.405 30.6205C127.574 29.8855 127.159 29.0146 127.159 28C127.159 29.0146 126.744 29.8855 125.913 30.6205Z"
+                        fill="white" />
+                    <path
+                        d="M3.03022 38.6205C2.1995 39.3555 1.18943 39.747 0 39.7949C1.18943 39.8429 2.1995 40.2343 3.03022 40.9773C3.86093 41.7123 4.27629 42.5912 4.27629 43.6058C4.27629 42.9347 4.46509 42.3195 4.84268 41.7443C5.22972 41.1691 5.74892 40.7057 6.40027 40.3622C7.06107 40.0106 7.7785 39.8269 8.56202 39.7949C7.36315 39.739 6.35307 39.3555 5.52236 38.6205C4.69165 37.8855 4.27629 37.0146 4.27629 36C4.27629 37.0146 3.86093 37.8855 3.03022 38.6205Z"
+                        fill="white" />
+                </svg>
+
+            </div>
+            <div class="ball">
+                <div class="moon-marks">
+                    <div class="mark"></div>
+                    <div class="mark"></div>
+                    <div class="mark"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="credit"><span>Coded with 💪 by Ali Shata</span>&<span>UI Design by Rishabh Chauhan</span></div>
+
+
+
+    <script>
+        let state = false
+        document.querySelector(".ball").onclick = function (e) {
+            state = !state
+            document.querySelector(".toggle").classList.toggle("night", state)
+            document.querySelector(".container").classList.toggle("night", state)
+            document.querySelector(".credit").classList.toggle("night", state)
+        }
+
+        document.querySelector(".ball").onmouseover = function (e) {
+            this.parentElement.classList.add("hover")
+        }
+
+        document.querySelector(".ball").onmouseleave = function (e) {
+            this.parentElement.classList.remove("hover")
+        }
+
+
+    </script>
+</body>
+
+</html>
